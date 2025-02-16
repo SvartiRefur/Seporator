@@ -48,6 +48,13 @@ const translitMap = {
   KY: "КИЙ",
 };
 
+function transliterateToRussian(text) {
+  text = text.toUpperCase();
+  return text
+    .replace(/(SH|KH|CH|SCH|KY|YU|YA)/g, (match) => translitMap[match] || match)
+    .replace(/[A-Z]/g, (char) => translitMap[char] || char);
+}
+
 function loadTheme() {
   const savedTheme = localStorage.getItem("theme");
   if (savedTheme === "dark") {
@@ -191,13 +198,6 @@ function extractCityAndAddress(text, fullText) {
   if (!isAddressFound)
     addressOutput = `<span class="attention">${transliteratedAddress}</span>`;
   return `${cityOutput}, ${addressOutput}`;
-}
-
-function transliterateToRussian(text) {
-  text = text.toUpperCase();
-  return text
-    .replace(/(SH|KH|CH|SCH|KY|YU|YA)/g, (match) => translitMap[match] || match)
-    .replace(/[A-Z]/g, (char) => translitMap[char] || char);
 }
 
 function displayResults(data, outputDiv) {
