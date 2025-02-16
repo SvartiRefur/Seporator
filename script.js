@@ -35,6 +35,7 @@ const translitMap = {
   U: "У",
   F: "Ф",
   H: "Х",
+  KH: "Х",
   C: "Ц",
   CH: "Ч",
   SH: "Ш",
