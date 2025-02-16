@@ -119,3 +119,27 @@ input:checked + .slider:before {
     background-color: green !important;
     color: white !important;
 }
+/* Общий контейнер для textarea и описания неисправности */
+.input-container {
+    position: relative; /* Создаем контекст позиционирования */
+    display: inline-block; /* Чтобы контейнер адаптировался под размер textarea */
+}
+
+/* Описание неисправности */
+.fault-description {
+    position: absolute; /* Позиционируем относительно input-container */
+    top: 0; /* Прикрепляем к верхней части textarea */
+    right: -250px; /* Отступ от правого края textarea (ширина блока) */
+    width: 250px; /* Ширина блока */
+    background-color: rgba(0, 0, 0, 0.05); /* Фоновый цвет */
+    border: 1px solid #ddd; /* Граница */
+    border-radius: 5px; /* Скругление углов */
+    padding: 10px; /* Отступы внутри */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Тень для отделения */
+}
+
+/* Темная тема для fault-description */
+.dark-theme .fault-description {
+    background-color: rgba(255, 255, 255, 0.05); /* Темный фон */
+    border-color: #333; /* Темная граница */
+}
