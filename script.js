@@ -196,7 +196,7 @@ function extractCityAndAddress(text, fullText) {
 function transliterateToRussian(text) {
   text = text.toUpperCase();
   return text
-    .replace(/(SH|CH|SCH|KY|YU|YA)/g, (match) => translitMap[match] || match)
+    .replace(/(SH|KH|CH|SCH|KY|YU|YA)/g, (match) => translitMap[match] || match)
     .replace(/[A-Z]/g, (char) => translitMap[char] || char);
 }
 
