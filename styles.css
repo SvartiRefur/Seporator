@@ -13,17 +13,7 @@ h1 {
     text-align: center;
     margin-bottom: 20px;
 }
-textarea {
-    width: 100%;
-    height: 200px;
-    margin-bottom: 20px;
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-}
-.dark-theme textarea {
-    background-color: #1e1e1e;
-    color: #ffffff;
-    border-color: #333;
-}
+
 button {
     padding: 5px 10px;
     font-size: 14px;
@@ -100,17 +90,7 @@ input:checked + .slider:before {
 .left-panel {
     width: 100%;
 }
-.fault-description {
-    margin-bottom: 20px;
-    padding: 10px;
-    background-color: rgba(0, 0, 0, 0.05);
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-.dark-theme .fault-description {
-    background-color: rgba(255, 255, 255, 0.05);
-    border-color: #333;
-}
+
 .attention {
     color: red;
     font-weight: bold;
@@ -125,12 +105,27 @@ input:checked + .slider:before {
     display: inline-block; /* Чтобы контейнер адаптировался под размер textarea */
 }
 
-/* Описание неисправности */
+/* Окно для вставки текста (textarea) */
+textarea#inputText {
+    width: 500%; /* Ширина равна половине страницы */
+    height: 200px;
+    margin-bottom: 20px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Темная тема для textarea */
+.dark-theme textarea {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-color: #333;
+}
+
+/* Блок "Описание неисправности" */
 .fault-description {
     position: absolute; /* Позиционируем относительно input-container */
     top: 0; /* Прикрепляем к верхней части textarea */
-    right: -250px; /* Отступ от правого края textarea (ширина блока) */
-    width: 250px; /* Ширина блока */
+    right: -1010px; /* Отступ от правого края textarea */
+    width: 300px; /* Ширина блока */
     background-color: rgba(0, 0, 0, 0.05); /* Фоновый цвет */
     border: 1px solid #ddd; /* Граница */
     border-radius: 5px; /* Скругление углов */
