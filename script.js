@@ -51,7 +51,7 @@ const translitMap = {
 function transliterateToRussian(text) {
   text = text.toUpperCase();
   return text
-    .replace(/(SH|KH|CH|SCH|KY|YU|YA)/g, (match) => translitMap[match] || match)
+    .replace(/(SH|KH|ZH|CH|SCH|KY|YU|YA)/g, (match) => translitMap[match] || match)
     .replace(/[A-Z]/g, (char) => translitMap[char] || char);
 }
 
