@@ -1,64 +1,117 @@
+/* Общие настройки */
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     transition: background-color 0.3s, color 0.3s;
 }
+
 .dark-theme {
     background-color: #121212;
     color: #ffffff;
 }
-h1 {
-    color: inherit;
-    font-size: 2.5rem;
-    text-align: center;
-    margin-bottom: 20px;
+
+/* Контейнер с сеткой */
+.container {
+    display: grid;
+    grid-template-areas:
+        "input fault"
+        "output output"
+        "theme theme";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 20px; /* Отступ между элементами */
+    padding: 20px;
 }
 
-button {
-    padding: 5px 10px;
+/* Раздел ввода текста */
+.input-section {
+    grid-area: input;
+}
+
+textarea {
+    width: 100%;
+    height: 200px;
+    padding: 10px;
     font-size: 14px;
-    cursor: pointer;
-    margin-bottom: 5px;
-    width: auto;
-    background-color: #f4f4f4;
-    border: 1px solid #ddd;
+    resize: none;
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
-.dark-theme button {
-    background-color: #333;
+
+.dark-theme textarea {
+    background-color: #1e1e1e;
     color: #ffffff;
-    border-color: #555;
+    border-color: #333;
 }
-button:hover {
-    background-color: #e9e9e9;
+
+/* Раздел описания неисправности */
+.fault-description {
+    grid-area: fault;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-left: 20px; /* Добавляем отступ слева */
 }
-.dark-theme button:hover {
-    background-color: #444;
+
+.dark-theme .fault-description {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: #333;
 }
+
+/* Раздел вывода результатов */
+.output-section {
+    grid-area: output;
+    display: flex; /* Выравнивание по центру */
+    flex-direction: column; /* Столбцовая разметка для заголовка и контента */
+    align-items: center; /* Центрирование по горизонтали */
+    justify-content: center; /* Центрирование по вертикали */
+    text-align: center; /* Центрирование текста */
+}
+
+.output-section h3 {
+    margin-top: 0;
+    margin-bottom: 10px; /* Отступ между заголовком и результатом */
+}
+
+#outputResult {
+    width: 100%; /* Занимает всю доступную ширину */
+    max-width: 500px; /* Ограничиваем максимальную ширину */
+    text-align: left; /* Текст внутри результата выравнивается по левому краю */
+}
+
 .result-item {
     margin-bottom: 10px;
     display: flex;
     align-items: center;
 }
+
 .result-item span {
     margin-right: 10px;
 }
+
+/* Переключатель темы */
 .theme-switcher {
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
+    grid-area: theme;
+    position: fixed; /* Фиксированное положение */
+    right: 20px; /* Отступ справа */
+    bottom: 20px; /* Отступ снизу */
 }
+
 .switch {
     position: relative;
     display: inline-block;
     width: 60px;
     height: 34px;
 }
+
 .switch input {
     opacity: 0;
     width: 0;
     height: 0;
 }
+
 .slider {
     position: absolute;
     cursor: pointer;
@@ -70,6 +123,7 @@ button:hover {
     transition: 0.4s;
     border-radius: 34px;
 }
+
 .slider:before {
     position: absolute;
     content: "";
@@ -81,60 +135,49 @@ button:hover {
     transition: 0.4s;
     border-radius: 50%;
 }
+
 input:checked + .slider {
     background-color: #2196F3;
 }
+
 input:checked + .slider:before {
     transform: translateX(26px);
 }
-.left-panel {
-    width: 100%;
+
+/* Кнопки */
+button {
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    width: auto;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
-.attention {
-    color: red;
-    font-weight: bold;
+.dark-theme button {
+    background-color: #333;
+    color: #ffffff;
+    border-color: #555;
 }
+
+button:hover {
+    background-color: #e9e9e9;
+}
+
+.dark-theme button:hover {
+    background-color: #444;
+}
+
+/* Подсветка скопированных значений */
 .copied {
     background-color: green !important;
     color: white !important;
 }
-/* Общий контейнер для textarea и описания неисправности */
-.input-container {
-    position: relative; /* Создаем контекст позиционирования */
-    display: inline-block; /* Чтобы контейнер адаптировался под размер textarea */
-}
 
-/* Окно для вставки текста (textarea) */
-textarea#inputText {
-    width: 500%; /* Ширина равна половине страницы */
-    height: 200px;
-    margin-bottom: 20px;
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-}
-
-/* Темная тема для textarea */
-.dark-theme textarea {
-    background-color: #1e1e1e;
-    color: #ffffff;
-    border-color: #333;
-}
-
-/* Блок "Описание неисправности" */
-.fault-description {
-    position: absolute; /* Позиционируем относительно input-container */
-    top: 0; /* Прикрепляем к верхней части textarea */
-    right: -1010px; /* Отступ от правого края textarea */
-    width: 300px; /* Ширина блока */
-    background-color: rgba(0, 0, 0, 0.05); /* Фоновый цвет */
-    border: 1px solid #ddd; /* Граница */
-    border-radius: 5px; /* Скругление углов */
-    padding: 10px; /* Отступы внутри */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Тень для отделения */
-}
-
-/* Темная тема для fault-description */
-.dark-theme .fault-description {
-    background-color: rgba(255, 255, 255, 0.05); /* Темный фон */
-    border-color: #333; /* Темная граница */
+/* Важные сообщения */
+.attention {
+    color: red;
+    font-weight: bold;
 }

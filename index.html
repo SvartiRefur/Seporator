@@ -3,27 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>СЕПОРАТОР</title>
+    <title>SEPORA</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>СЕПОРАТОР</h1>
-    <div class="input-container">
-        <textarea id="inputText" placeholder="Вставьте текст здесь..." oninput="extractData()"></textarea>
+    <div class="container">
+        <div class="input-section">
+            <textarea id="inputText" placeholder="Вставьте текст здесь..." oninput="extractData()"></textarea>
+        </div>
         <div class="fault-description">
             <h3>Описание неисправности:</h3>
             <div id="faultDescription"></div>
         </div>
-    </div>
-    <div class="left-panel">
-        <h2>Результат:</h2>
-        <div id="outputResult"></div>
-    </div>
-    <div class="theme-switcher">
-        <label class="switch">
-            <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
-            <span class="slider"></span>
-        </label>
+        <div class="output-section">
+            <h3>Результат:</h3>
+            <div id="outputResult"></div>
+        </div>
+        <div class="theme-switcher">
+            <label class="switch">
+                <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
+                <span class="slider"></span>
+            </label>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
