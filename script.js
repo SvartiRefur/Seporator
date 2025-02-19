@@ -51,7 +51,7 @@ const translitMap = {
 function transliterateToRussian(text) {
   text = text.toUpperCase();
   return text
-    .replace(/(SH|KH|ZH|CH|SCH|KY|YU|YA|EO)/g, (match) => translitMap[match] || match)
+    .replace(/(SH|KH|ZH|CH|SCH|KY|YU|YA)/g, (match) => translitMap[match] || match)
     .replace(/[A-Z]/g, (char) => translitMap[char] || char);
 }
 
@@ -68,69 +68,94 @@ function saveTheme(theme) {
 }
 
 function extractData() {
-  const inputText = document.getElementById("inputText").value;
+  const inputText = document.getElementById('inputText').value;
   const result = {};
-  const outputDiv = document.getElementById("outputResult");
-  outputDiv.innerHTML = "";
+  const outputDiv = document.getElementById('outputResult');
+  outputDiv.innerHTML = '';
 
-  const faultDescriptionElement = document.getElementById("faultDescription");
+  // Очистка поля "Описание неисправности", если фраза отсутствует
+  const faultDescriptionElement = document.getElementById('faultDescription');
   if (!inputText.includes("Описание неисправности")) {
-    faultDescriptionElement.innerHTML = "";
+      faultDescriptionElement.innerHTML = "";
   }
 
-  const firstLine = inputText.split("\n")[0].trim();
-  result["первая_строка"] = firstLine;
+  // Первая строка возвращается полностью
+  const firstLine = inputText.split('\n')[0].trim();
+  result['первая_строка'] = firstLine;
 
+  // Извлечение SSID и Password из первой строки
+  const ssidMatch = firstLine.match(/SSID:\s*(\S+)/i);
+  const passwordMatch = firstLine.match(/Password:\s*(\S+)/i); // Изменено на "Password"
+
+  // Сохраняем SSID и Password в отдельные переменные
+  let ssid = ssidMatch ? ssidMatch[1].trim() : null;
+  let password = passwordMatch ? passwordMatch[1].trim() : null;
+
+  // Удаляем кавычку в конце Password, если она есть
+  if (password && password.endsWith('"')) {
+      password = password.slice(0, -1).trim(); // Удаляем последний символ
+  }
+
+  // Удаляем SSID и Password из первой строки
+  let filteredFirstLine = firstLine;
+  if (ssid) {
+      filteredFirstLine = filteredFirstLine.replace(ssidMatch[0], '').trim();
+  }
+  if (password) {
+      filteredFirstLine = filteredFirstLine.replace(passwordMatch[0], '').trim();
+  }
+
+  // Обновляем значение первой строки без SSID и Password
+  result['первая_строка'] = filteredFirstLine;
+
+  // Извлечение данных для первого юр.лица
   for (const [key, pattern] of Object.entries(patterns)) {
-    const match = inputText.match(pattern);
-    result[key] = match ? match[1].trim() : null;
+      const match = inputText.match(pattern);
+      result[key] = match ? match[1].trim() : null;
   }
 
   for (const [key, label] of Object.entries(specificFields)) {
-    if (label === "Номер счета юр. лица") {
-      result["номер_счета"] = extractNumberAfterLabel(
-        inputText,
-        "Номер счета юридического лица"
-      );
-    } else if (label === "Алиас счета юр. лица") {
-      result["алиас_счета"] = extractAlias(
-        inputText,
-        "Алиас счета юридического лица (синоним счета)"
-      );
-    } else if (label === "Идентификатор ТСП") {
-      result["идентификатор_тсп"] = extractBetweenLabels(
-        inputText,
-        "Идентификатор ТСП",
-        "ID платформы"
-      );
-    } else if (label === "ID платформы") {
-      result["id_платформы"] = extractAfterLabel(inputText, "ID платформы");
-    } else if (label === "Адрес") {
-      result["город_адрес"] = extractCityAndAddress(inputText, inputText);
-    }
+      if (label === "Номер счета юр. лица") {
+          result['номер_счета'] = extractNumberAfterLabel(inputText, "Номер счета юридического лица");
+      } else if (label === "Алиас счета юр. лица") {
+          result['алиас_счета'] = extractAlias(inputText, "Алиас счета юридического лица (синоним счета)");
+      } else if (label === "Идентификатор ТСП") {
+          result['идентификатор_тсп'] = extractBetweenLabels(inputText, "Идентификатор ТСП", "ID платформы");
+      } else if (label === "ID платформы") {
+          result['id_платформы'] = extractAfterLabel(inputText, "ID платформы");
+      } else if (label === "Адрес") {
+          result['город_адрес'] = extractCityAndAddress(inputText, inputText);
+      }
   }
 
+  // Добавляем SSID и Password в результаты, если они найдены
+  if (ssid) {
+      result['ssid'] = ssid;
+  }
+  if (password) {
+      result['password'] = password;
+  }
+
+  // Отображение результатов
   displayResults(result, outputDiv);
 
-  const faultDescription = extractBetweenLabels(
-    inputText,
-    "Описание неисправности",
-    "Наименование клиента"
-  );
+  // Извлечение описания неисправности
+  const faultDescription = extractBetweenLabels(inputText, "Описание неисправности", "Наименование клиента");
   faultDescriptionElement.innerHTML = faultDescription
-    ? highlightKeywords(faultDescription)
-    : "Не указано";
+      ? highlightKeywords(faultDescription)
+      : "Не указано";
 
+  // Обработка второго юр.лица
   const secondEntityStart = inputText.indexOf("2 юр.лицо:");
   if (secondEntityStart !== -1) {
-    const secondEntityText = inputText.substring(secondEntityStart);
-    const secondEntityData = extractSecondEntityData(secondEntityText);
-    if (secondEntityData) {
-      const secondEntityHeader = document.createElement("h3");
-      secondEntityHeader.textContent = "2 юр.лицо";
-      outputDiv.appendChild(secondEntityHeader);
-      displaySecondEntityResults(secondEntityData, outputDiv);
-    }
+      const secondEntityText = inputText.substring(secondEntityStart);
+      const secondEntityData = extractSecondEntityData(secondEntityText);
+      if (secondEntityData) {
+          const secondEntityHeader = document.createElement('h3');
+          secondEntityHeader.textContent = "2 юр.лицо";
+          outputDiv.appendChild(secondEntityHeader);
+          displaySecondEntityResults(secondEntityData, outputDiv);
+      }
   }
 }
 
@@ -202,59 +227,58 @@ function extractCityAndAddress(text, fullText) {
 
 function displayResults(data, outputDiv) {
   const fields = [
-    { label: "", value: data["первая_строка"], type: "text" },
-    { label: "Тип терминала", value: data["тип_терминала"], type: "text" },
-    {
-      label: "ТСП",
-      value: data["название_тсп"]?.split(",")[0].trim(),
-      type: "button",
-    },
-    { label: "MID", value: data["merchant_id"], type: "button" },
-    { label: "ID платформы", value: data["id_платформы"], type: "button" },
-    { label: "TID", value: data["terminal_id"], type: "button" },
-    {
-      label: "Идентификатор ТСП",
-      value: data["идентификатор_тсп"],
-      type: "button",
-    },
-    {
-      label: "Номер счета юр. лица",
-      value: data["номер_счета"],
-      type: "button",
-    },
-    {
-      label: "Алиас счета юр. лица",
-      value: data["алиас_счета"],
-      type: "button",
-    },
-    { label: "Адрес", value: data["город_адрес"], type: "button" },
+      { label: "", value: data['первая_строка'], type: "text" }
   ];
 
-  fields.forEach((field) => {
-    // Пропускаем любые пустые значения
-    if (!field.value) return;
+  // Добавляем SSID и Password только если Password существует
+  if (data['password']) {
+      fields.push({ label: "SSID", value: data['ssid'], type: "button" });
+      fields.push({ label: "Password", value: data['password'], type: "button" });
+  }
 
-    const itemDiv = document.createElement("div");
-    itemDiv.className = "result-item";
+  // Остальные поля
+  fields.push(
+      { label: "Тип терминала", value: data['тип_терминала'], type: "text" },
+      { label: "ТСП", value: data['название_тсп']?.split(',')[0].trim(), type: "button" },
+      { label: "MID", value: data['merchant_id'], type: "button" },
+      { label: "ID платформы", value: data['id_платформы'], type: "button" },
+      { label: "TID", value: data['terminal_id'], type: "button" },
+      { label: "Идентификатор ТСП", value: data['идентификатор_тсп'], type: "button" },
+      { label: "Номер счета юр. лица", value: data['номер_счета'], type: "button" },
+      { label: "Алиас счета юр. лица", value: data['алиас_счета'], type: "button" },
+      { label: "Адрес", value: data['город_адрес'], type: "button" }
+  );
 
-    if (field.label) {
-      const labelSpan = document.createElement("span");
-      labelSpan.textContent = `${field.label}:`;
-      itemDiv.appendChild(labelSpan);
-    }
+  fields.forEach(field => {
+      if (field.value === null || field.value === "Не указано") return; // Пропускаем пустые значения
 
-    if (field.type === "button") {
-      const button = document.createElement("button");
-      button.innerHTML = field.value;
-      button.onclick = () => copyToClipboard(button);
-      itemDiv.appendChild(button);
-    } else {
-      const textElement = document.createElement("span");
-      textElement.innerHTML = field.value;
-      itemDiv.appendChild(textElement);
-    }
+      // Если поле "ТСП" и значение отсутствует, пропускаем его
+      if (field.label === "ТСП" && !data['название_тсп']) return;
 
-    outputDiv.appendChild(itemDiv);
+      // Если поле "Адрес" и данные отсутствуют, пропускаем его
+      if (field.label === "Адрес" && data['город_адрес'] === null) return;
+
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'result-item';
+
+      if (field.label) {
+          const labelSpan = document.createElement('span');
+          labelSpan.textContent = `${field.label}:`;
+          itemDiv.appendChild(labelSpan);
+      }
+
+      if (field.type === "button") {
+          const button = document.createElement('button');
+          button.innerHTML = field.value;
+          button.onclick = () => copyToClipboard(button);
+          itemDiv.appendChild(button);
+      } else {
+          const textElement = document.createElement('span');
+          textElement.innerHTML = field.value;
+          itemDiv.appendChild(textElement);
+      }
+
+      outputDiv.appendChild(itemDiv);
   });
 }
 
