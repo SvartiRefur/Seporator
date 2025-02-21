@@ -141,7 +141,7 @@ function extractData() {
   displayResults(result, outputDiv);
 
   // Извлечение описания неисправности
-  const faultDescription = extractBetweenLabels(inputText, "Описание неисправности", "Наименование клиента");
+  const faultDescription = extractBetweenLabels(inputText, "Описание неисправности", "Регистрационные данные");
   faultDescriptionElement.innerHTML = faultDescription
       ? highlightKeywords(faultDescription)
       : "Не указано";
@@ -356,6 +356,8 @@ function highlightKeywords(text) {
     "ОБРАТНОГО ЭКВАЙРИНГА",
     "ОЭ",
     "ЭС",
+    "Фармленд",
+    "ФАРМЛЕНД"
   ];
   keywords.forEach((keyword) => {
     const regex = new RegExp(`(${keyword})`, "gi");
