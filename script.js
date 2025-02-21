@@ -86,15 +86,14 @@ function extractData() {
 
   // Извлечение SSID и Password из первой строки
   const ssidMatch = firstLine.match(/SSID:\s*(\S+)/i);
-  const passwordMatch = firstLine.match(/Password:\s*(\S+)/i); // Изменено на "Password"
+  const passwordMatch = firstLine.match(/Password:\s*(\S+)/i);
 
-  // Сохраняем SSID и Password в отдельные переменные
   let ssid = ssidMatch ? ssidMatch[1].trim() : null;
   let password = passwordMatch ? passwordMatch[1].trim() : null;
 
   // Удаляем кавычку в конце Password, если она есть
   if (password && password.endsWith('"')) {
-      password = password.slice(0, -1).trim(); // Удаляем последний символ
+      password = password.slice(0, -1).trim();
   }
 
   // Удаляем SSID и Password из первой строки
@@ -106,7 +105,6 @@ function extractData() {
       filteredFirstLine = filteredFirstLine.replace(passwordMatch[0], '').trim();
   }
 
-  // Обновляем значение первой строки без SSID и Password
   result['первая_строка'] = filteredFirstLine;
 
   // Извлечение данных для первого юр.лица
@@ -137,7 +135,7 @@ function extractData() {
       result['password'] = password;
   }
 
-  // Отображение результатов
+  // Отображение результатов для первого юр.лица
   displayResults(result, outputDiv);
 
   // Извлечение описания неисправности
@@ -147,15 +145,12 @@ function extractData() {
       : "Не указано";
 
   // Обработка второго юр.лица
-  const secondEntityStart = inputText.indexOf("2 юр.лицо:");
+  const secondEntityStart = inputText.indexOf("2 юр. лицо:");
   if (secondEntityStart !== -1) {
-      const secondEntityText = inputText.substring(secondEntityStart);
-      const secondEntityData = extractSecondEntityData(secondEntityText);
-      if (secondEntityData) {
-          const secondEntityHeader = document.createElement('h3');
-          secondEntityHeader.textContent = "2 юр.лицо";
-          outputDiv.appendChild(secondEntityHeader);
-          displaySecondEntityResults(secondEntityData, outputDiv);
+      const secondEntityText = inputText.substring(secondEntityStart); // Берем часть текста после "2 юр. лицо:"
+      const secondEntityData = extractSecondEntityData(secondEntityText); // Извлекаем данные второго юр.лица
+      if (Object.values(secondEntityData).some(value => value !== null)) { // Проверяем, есть ли данные
+          displaySecondEntityResults(secondEntityData, outputDiv); // Выводим результаты
       }
   }
 }
@@ -283,57 +278,68 @@ function displayResults(data, outputDiv) {
   });
 }
 
-function displaySecondEntityResults(data, outputDiv) {
-  const fields = [
-    {
-      label: "ТСП",
-      value: data["название_тсп"]?.split(",")[0].trim(),
-      type: "button",
-    },
-    { label: "MID", value: data["merchant_id"], type: "button" },
-    { label: "TID", value: data["terminal_id"], type: "button" },
-    { label: "TPK_KEY", value: data["tpk_key"], type: "button" },
-    { label: "TAK_KEY", value: data["tak_key"], type: "button" },
-    { label: "TDK_KEY", value: data["tdk_key"], type: "button" },
-  ];
-  fields.forEach((field) => {
-    if (field.value === null || field.value === "Не указано") return;
-    const itemDiv = document.createElement("div");
-    itemDiv.className = "result-item";
-    if (field.label) {
-      const labelSpan = document.createElement("span");
-      labelSpan.textContent = `${field.label}:`;
-      itemDiv.appendChild(labelSpan);
-    }
-    if (field.type === "button") {
-      const button = document.createElement("button");
-      button.innerHTML = field.value;
-      button.onclick = () => copyToClipboard(button);
-      itemDiv.appendChild(button);
-    } else {
-      const textElement = document.createElement("span");
-      textElement.innerHTML = field.value;
-      itemDiv.appendChild(textElement);
-    }
-    outputDiv.appendChild(itemDiv);
-  });
-}
-
 function extractSecondEntityData(text) {
   const secondEntityPatterns = {
-    terminal_id: /Terminal_ID\s*:\s*(\d+)/i,
-    merchant_id: /MerchantID\s*:\s*(\S+)/i,
-    tpk_key: /TPK_KEY\s*:\s*(\S+)/i,
-    tak_key: /TAK_KEY\s*:\s*(\S+)/i,
-    tdk_key: /TDK_KEY\s*:\s*(\S+)/i,
-    название_тсп: /Название\s+ТСП:\s*(.*?),/i,
+      название_тсп: /Название\s+ТСП:\s*(.*?),/i, // Извлекаем название ТСП
+      merchant_id: /MerchantID\s*:\s*(\S+)/i,   // Извлекаем MID
+      terminal_id: /Terminal_ID\s*:\s*(\d+)/i,  // Извлекаем TID
+      tpk_key: /TPK_KEY\s*:\s*(\S+)/i,          // Извлекаем TPK_KEY
+      tak_key: /TAK_KEY\s*:\s*(\S+)/i,          // Извлекаем TAK_KEY
+      tdk_key: /TDK_KEY\s*:\s*(\S+)/i           // Извлекаем TDK_KEY
   };
+
   const data = {};
   for (const [key, pattern] of Object.entries(secondEntityPatterns)) {
-    const match = text.match(pattern);
-    data[key] = match && match[1] ? match[1].trim() : null;
+      const match = text.match(pattern); // Проверяем соответствие паттерну
+      data[key] = match && match[1] ? match[1].trim() : null; // Сохраняем найденное значение
   }
   return data;
+}
+
+function displaySecondEntityResults(data, outputDiv) {
+  if (!data || Object.values(data).every(value => value === null)) return; // Пропускаем, если нет данных
+
+  // Создаем заголовок для второго юр.лица
+  const secondEntityHeader = document.createElement('h3');
+  secondEntityHeader.textContent = "2 юр.лицо";
+  outputDiv.appendChild(secondEntityHeader);
+
+  // Определяем поля для второго юр.лица
+  const fields = [
+      { label: "ТСП", value: data['название_тсп']?.split(',')[0].trim(), type: "button" },
+      { label: "MID", value: data['merchant_id'], type: "button" },
+      { label: "TID", value: data['terminal_id'], type: "button" },
+      { label: "TPK_KEY", value: data['tpk_key'], type: "button" },
+      { label: "TAK_KEY", value: data['tak_key'], type: "button" },
+      { label: "TDK_KEY", value: data['tdk_key'], type: "button" }
+  ];
+
+  // Отображаем каждый пункт
+  fields.forEach(field => {
+      if (field.value === null || field.value === "Не указано") return; // Пропускаем пустые значения
+
+      const itemDiv = document.createElement('div'); // Создаем элемент для каждого пункта
+      itemDiv.className = 'result-item'; // Добавляем класс для стилей
+
+      if (field.label) {
+          const labelSpan = document.createElement('span'); // Создаем метку
+          labelSpan.textContent = `${field.label}:`;
+          itemDiv.appendChild(labelSpan); // Добавляем метку в элемент
+      }
+
+      if (field.type === "button") {
+          const button = document.createElement('button'); // Создаем кнопку
+          button.innerHTML = field.value;
+          button.onclick = () => copyToClipboard(button); // Добавляем обработчик для копирования
+          itemDiv.appendChild(button); // Добавляем кнопку в элемент
+      } else {
+          const textElement = document.createElement('span'); // Создаем текстовый элемент
+          textElement.innerHTML = field.value;
+          itemDiv.appendChild(textElement); // Добавляем текст в элемент
+      }
+
+      outputDiv.appendChild(itemDiv); // Добавляем элемент в контейнер результатов
+  });
 }
 
 function copyToClipboard(button) {
