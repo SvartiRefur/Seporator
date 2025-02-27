@@ -41,6 +41,7 @@ const translitMap = {
   CH: "Ч",
   SH: "Ш",
   SCH: "Щ",
+  SHCH: "Щ",
   YU: "Ю",
   YA: "Я",
   J: "ДЖ",
@@ -52,7 +53,7 @@ const translitMap = {
 function transliterateToRussian(text) {
   text = text.toUpperCase();
   return text
-    .replace(/(SH|KH|ZH|TS|CH|SCH|KY|YU|YA)/g, (match) => translitMap[match] || match)
+    .replace(/(SH|KH|ZH|TS|CH|SCH|SHCH|KY|YU|YA)/g, (match) => translitMap[match] || match)
     .replace(/[A-Z]/g, (char) => translitMap[char] || char);
 }
 
