@@ -2,7 +2,7 @@ const patterns = {
   название_тсп: /Название\s+ТСП:\s*(.*?),/i,
   merchant_id: /MerchantID\s*:\s*(\S+)/i,
   тип_терминала: /Тип\s+терминала\s*:\s*(\S+)/i,
-  terminal_id: /Terminal_ID\s*:\s*(\d+)/i,
+  terminal_id: /Terminal_ID\s*:\s*(\S+)/i,
 };
 const specificFields = {
   номер_счета: "Номер счета юр. лица",
