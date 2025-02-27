@@ -1,5 +1,4 @@
 const patterns = {
-  название_тсп: /Название\s+ТСП:\s*(.*?),/i,
   merchant_id: /MerchantID\s*:\s*(\S+)/i,
   тип_терминала: /Тип\s+терминала\s*:\s*(\S+)/i,
   terminal_id: /Terminal_ID\s*:\s*(\S+)/i,
@@ -110,12 +109,25 @@ function extractData() {
 
   result['первая_строка'] = filteredFirstLine;
 
-  // Извлечение данных для первого юр.лица
+  // Обновленная логика для поиска ТСП
+  const tspMatch = inputText.match(/Название\s+ТСП:\s*(.*)/i); // Ищем всё после "Название ТСП:"
+  let название_тсп = tspMatch ? tspMatch[1].trim() : null;
+
+  // Проверяем наличие запятой и обрезаем строку, если она есть
+  if (название_тсп && название_тсп.includes(',')) {
+      название_тсп = название_тсп.split(',')[0].trim(); // Берем всё до первой запятой
+  }
+
+  result['название_тсп'] = название_тсп;
+
+  // Извлечение остальных данных для первого юр.лица
   for (const [key, pattern] of Object.entries(patterns)) {
+      if (key === 'название_тсп') continue; // Пропускаем обработку ТСП, так как оно уже извлечено
       const match = inputText.match(pattern);
       result[key] = match ? match[1].trim() : null;
   }
 
+  // Обработка специальных полей
   for (const [key, label] of Object.entries(specificFields)) {
       if (label === "Номер счета юр. лица") {
           result['номер_счета'] = extractNumberAfterLabel(inputText, "Номер счета юридического лица");
@@ -138,7 +150,7 @@ function extractData() {
       result['password'] = password;
   }
 
-  // Отображение результатов для первого юр.лица
+  // Отображение результатов
   displayResults(result, outputDiv);
 
   // Извлечение описания неисправности
@@ -150,10 +162,10 @@ function extractData() {
   // Обработка второго юр.лица
   const secondEntityStart = inputText.indexOf("2 юр. лицо:");
   if (secondEntityStart !== -1) {
-      const secondEntityText = inputText.substring(secondEntityStart); // Берем часть текста после "2 юр. лицо:"
-      const secondEntityData = extractSecondEntityData(secondEntityText); // Извлекаем данные второго юр.лица
-      if (Object.values(secondEntityData).some(value => value !== null)) { // Проверяем, есть ли данные
-          displaySecondEntityResults(secondEntityData, outputDiv); // Выводим результаты
+      const secondEntityText = inputText.substring(secondEntityStart);
+      const secondEntityData = extractSecondEntityData(secondEntityText);
+      if (Object.values(secondEntityData).some(value => value !== null)) {
+          displaySecondEntityResults(secondEntityData, outputDiv);
       }
   }
 }
