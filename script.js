@@ -90,28 +90,38 @@ function extractData() {
   const firstLine = inputText.split('\n')[0].trim();
   result['первая_строка'] = firstLine;
 
-  // Обновленная логика для извлечения SSID и Password
-  const ssidMatch = firstLine.match(/SSID:\s*([^"]*)(?=Password|$)/i); // Ищем всё до "Password" или конца строки
-  const passwordMatch = firstLine.match(/Password:\s*(\S+)/i); // Ищем Password
+  // Обновленная логика для поиска ТСП
+  const tspMatch = inputText.match(/Название\s+ТСП:\s*(.*?)(?=,|$)/i); // Ищем всё до запятой или конца строки
+  let название_тсп = tspMatch ? tspMatch[1].trim() : null;
 
-  let ssid = ssidMatch ? ssidMatch[1].trim() : null; // Берем всё до "Password"
+  // Если запятая есть, берем всё до неё; иначе берем всю строку
+  if (название_тсп && название_тсп.includes(',')) {
+      название_тсп = название_тсп.split(',')[0].trim(); // Берем всё до первой запятой
+  }
+
+  result['название_тсп'] = название_тсп;
+
+  // Извлечение SSID и Password из первой строки
+  const ssidMatch = firstLine.match(/SSID:\s*([^"]*)(?=Password|$)/i); // Ищем всё до "Password" или конца строки
+  const passwordMatch = firstLine.match(/Password:\s*(\S+)/i);
+
+  let ssid = ssidMatch ? ssidMatch[1].trim() : null;
   let password = passwordMatch ? passwordMatch[1].trim() : null;
 
   // Удаляем кавычку в конце Password, если она есть
   if (password && password.endsWith('"')) {
-      password = password.slice(0, -1).trim(); // Удаляем последний символ
+      password = password.slice(0, -1).trim();
   }
 
   // Удаляем SSID и Password из первой строки
   let filteredFirstLine = firstLine;
   if (ssid) {
-      filteredFirstLine = filteredFirstLine.replace(ssidMatch[0], '').trim(); // Удаляем SSID
+      filteredFirstLine = filteredFirstLine.replace(ssidMatch[0], '').trim();
   }
   if (password) {
-      filteredFirstLine = filteredFirstLine.replace(passwordMatch[0], '').trim(); // Удаляем Password
+      filteredFirstLine = filteredFirstLine.replace(passwordMatch[0], '').trim();
   }
 
-  // Обновляем значение первой строки без SSID и Password
   result['первая_строка'] = filteredFirstLine;
 
   // Добавляем SSID и Password в результаты, если они найдены
@@ -124,6 +134,7 @@ function extractData() {
 
   // Извлечение данных для первого юр.лица
   for (const [key, pattern] of Object.entries(patterns)) {
+      if (key === 'название_тсп') continue; // Пропускаем обработку ТСП, так как оно уже извлечено
       const match = inputText.match(pattern);
       result[key] = match ? match[1].trim() : null;
   }
