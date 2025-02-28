@@ -52,12 +52,13 @@ const translitMap = {
   ROSLAVL: "РОСЛАВЛЬ",
   TVER: "ТВЕРЬ",
   STAVROPOL: "СТАВРОПОЛЬ",
+  TSY: "ЦЫ",
 };
 
 function transliterateToRussian(text) {
   text = text.toUpperCase();
   return text
-    .replace(/(STAVROPOL|ANGELS|ROSLAVL|TVER|SHCH|SCH|YY|SH|KH|ZH|TS|CH|KY|YU|YA)/g, (match) => translitMap[match] || match) 
+    .replace(/(STAVROPOL|ANGELS|ROSLAVL|TVER|SHCH|TSY|SCH|YY|SH|KH|ZH|TS|CH|KY|YU|YA)/g, (match) => translitMap[match] || match) 
     .replace(/[A-Z]/g, (char) => translitMap[char] || char); 
 }
 
@@ -89,43 +90,40 @@ function extractData() {
   const firstLine = inputText.split('\n')[0].trim();
   result['первая_строка'] = firstLine;
 
-  // Извлечение SSID и Password из первой строки
-  const ssidMatch = firstLine.match(/SSID:\s*(\S+)/i);
-  const passwordMatch = firstLine.match(/Password:\s*(\S+)/i);
+  // Обновленная логика для извлечения SSID и Password
+  const ssidMatch = firstLine.match(/SSID:\s*([^"]*)(?=Password|$)/i); // Ищем всё до "Password" или конца строки
+  const passwordMatch = firstLine.match(/Password:\s*(\S+)/i); // Ищем Password
 
-  let ssid = ssidMatch ? ssidMatch[1].trim() : null;
+  let ssid = ssidMatch ? ssidMatch[1].trim() : null; // Берем всё до "Password"
   let password = passwordMatch ? passwordMatch[1].trim() : null;
 
   // Удаляем кавычку в конце Password, если она есть
   if (password && password.endsWith('"')) {
-      password = password.slice(0, -1).trim();
+      password = password.slice(0, -1).trim(); // Удаляем последний символ
   }
 
   // Удаляем SSID и Password из первой строки
   let filteredFirstLine = firstLine;
   if (ssid) {
-      filteredFirstLine = filteredFirstLine.replace(ssidMatch[0], '').trim();
+      filteredFirstLine = filteredFirstLine.replace(ssidMatch[0], '').trim(); // Удаляем SSID
   }
   if (password) {
-      filteredFirstLine = filteredFirstLine.replace(passwordMatch[0], '').trim();
+      filteredFirstLine = filteredFirstLine.replace(passwordMatch[0], '').trim(); // Удаляем Password
   }
 
+  // Обновляем значение первой строки без SSID и Password
   result['первая_строка'] = filteredFirstLine;
 
-  // Обновленная логика для поиска ТСП
-  const tspMatch = inputText.match(/Название\s+ТСП:\s*(.*)/i); // Ищем всё после "Название ТСП:"
-  let название_тсп = tspMatch ? tspMatch[1].trim() : null;
-
-  // Проверяем наличие запятой и обрезаем строку, если она есть
-  if (название_тсп && название_тсп.includes(',')) {
-      название_тсп = название_тсп.split(',')[0].trim(); // Берем всё до первой запятой
+  // Добавляем SSID и Password в результаты, если они найдены
+  if (ssid) {
+      result['ssid'] = ssid;
+  }
+  if (password) {
+      result['password'] = password;
   }
 
-  result['название_тсп'] = название_тсп;
-
-  // Извлечение остальных данных для первого юр.лица
+  // Извлечение данных для первого юр.лица
   for (const [key, pattern] of Object.entries(patterns)) {
-      if (key === 'название_тсп') continue; // Пропускаем обработку ТСП, так как оно уже извлечено
       const match = inputText.match(pattern);
       result[key] = match ? match[1].trim() : null;
   }
@@ -143,14 +141,6 @@ function extractData() {
       } else if (label === "Адрес") {
           result['город_адрес'] = extractCityAndAddress(inputText, inputText);
       }
-  }
-
-  // Добавляем SSID и Password в результаты, если они найдены
-  if (ssid) {
-      result['ssid'] = ssid;
-  }
-  if (password) {
-      result['password'] = password;
   }
 
   // Отображение результатов
