@@ -47,7 +47,7 @@ const translitMap = {
   W: "В",
   Q: "КВ",
   KY: "КИЙ",
-  YY: "ЫЙ",
+  NYY: "ЫЙ",
   ANGELS: "ЭНГЕЛЬС",
   ROSLAVL: "РОСЛАВЛЬ",
   TVER: "ТВЕРЬ",
@@ -60,7 +60,7 @@ const translitMap = {
 function transliterateToRussian(text) {
   text = text.toUpperCase();
   return text
-    .replace(/(STAVROPOL|ANGELS|ROSLAVL|PERM|TVER|SHCH|TSY|SCH|YY|NY|SH|KH|ZH|TS|CH|KY|YU|YA)/g, (match) => translitMap[match] || match) 
+    .replace(/(STAVROPOL|ANGELS|ROSLAVL|PERM|TVER|SHCH|TSY|SCH|NYY|NY|SH|KH|ZH|TS|CH|KY|YU|YA)/g, (match) => translitMap[match] || match) 
     .replace(/[A-Z]/g, (char) => translitMap[char] || char); 
 }
 
