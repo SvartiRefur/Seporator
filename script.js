@@ -47,7 +47,7 @@ const translitMap = {
   W: "В",
   Q: "КВ",
   KY: "КИЙ",
-  NYY: "ЫЙ",
+  NYY: "НЫЙ",
   ANGELS: "ЭНГЕЛЬС",
   ROSLAVL: "РОСЛАВЛЬ",
   TVER: "ТВЕРЬ",
