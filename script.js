@@ -55,12 +55,13 @@ const translitMap = {
   TSY: "ЦЫ",
   PERM: "ПЕРМЬ",
   NY: "НИЙ",
+  KHRUSTALNYY: "ГУСЬ-ХРУСТАЛЬНЫЙ",
 };
 
 function transliterateToRussian(text) {
   text = text.toUpperCase();
   return text
-    .replace(/(STAVROPOL|ANGELS|ROSLAVL|PERM|TVER|SHCH|TSY|SCH|NYY|NY|SH|KH|ZH|TS|CH|KY|YU|YA)/g, (match) => translitMap[match] || match) 
+    .replace(/(KHRUSTALNYY|STAVROPOL|ANGELS|ROSLAVL|PERM|TVER|SHCH|TSY|SCH|NYY|NY|SH|KH|ZH|TS|CH|KY|YU|YA)/g, (match) => translitMap[match] || match) 
     .replace(/[A-Z]/g, (char) => translitMap[char] || char); 
 }
 
