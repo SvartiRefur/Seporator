@@ -174,15 +174,29 @@ function extractData() {
       ? highlightKeywords(faultDescription)
       : "Не указано";
 
-  // Обработка второго юр.лица
-  const secondEntityStart = inputText.indexOf("2 юр. лицо:");
-  if (secondEntityStart !== -1) {
-      const secondEntityText = inputText.substring(secondEntityStart);
-      const secondEntityData = extractSecondEntityData(secondEntityText);
-      if (Object.values(secondEntityData).some(value => value !== null)) {
-          displaySecondEntityResults(secondEntityData, outputDiv);
-      }
-  }
+  // --- Обработка второго юр.лица ---
+const secondEntityStart = inputText.indexOf("2 юр.лицо:");
+if (secondEntityStart !== -1) {
+  const secondEntityText = inputText.substring(secondEntityStart);
+  const secondEntityData = extractNthEntityData(secondEntityText);
+  displayNthEntityResults(secondEntityData, outputDiv, 2);
+}
+
+// --- Обработка третьего юр.лица ---
+const thirdEntityStart = inputText.indexOf("3 юр.лицо:");
+if (thirdEntityStart !== -1) {
+  const thirdEntityText = inputText.substring(thirdEntityStart);
+  const thirdEntityData = extractNthEntityData(thirdEntityText);
+  displayNthEntityResults(thirdEntityData, outputDiv, 3);
+}
+
+// --- Обработка четвертого юр.лица ---
+const fourthEntityStart = inputText.indexOf("4 юр.лицо:");
+if (fourthEntityStart !== -1) {
+  const fourthEntityText = inputText.substring(fourthEntityStart);
+  const fourthEntityData = extractNthEntityData(fourthEntityText);
+  displayNthEntityResults(fourthEntityData, outputDiv, 4);
+}
 }
 
 function extractNumberAfterLabel(text, label) {
@@ -308,67 +322,64 @@ function displayResults(data, outputDiv) {
   });
 }
 
-function extractSecondEntityData(text) {
-  const secondEntityPatterns = {
-      название_тсп: /Название\s+ТСП:\s*(.*?),/i, // Извлекаем название ТСП
-      merchant_id: /MerchantID\s*:\s*(\S+)/i,   // Извлекаем MID
-      terminal_id: /Terminal_ID\s*:\s*(\d+)/i,  // Извлекаем TID
-      tpk_key: /TPK_KEY\s*:\s*(\S+)/i,          // Извлекаем TPK_KEY
-      tak_key: /TAK_KEY\s*:\s*(\S+)/i,          // Извлекаем TAK_KEY
-      tdk_key: /TDK_KEY\s*:\s*(\S+)/i           // Извлекаем TDK_KEY
+function extractNthEntityData(text) {
+  const patterns = {
+    название_тсп: /Название\s+ТСП:\s*(.*?),/i,
+    merchant_id: /MerchantID\s*:\s*(\S+)/i,
+    terminal_id: /Terminal_ID\s*:\s*(\d+)/i,
+    tpk_key: /TPK_KEY\s*:\s*(\S+)/i,
+    tak_key: /TAK_KEY\s*:\s*(\S+)/i,
+    tdk_key: /TDK_KEY\s*:\s*(\S+)/i,
   };
 
   const data = {};
-  for (const [key, pattern] of Object.entries(secondEntityPatterns)) {
-      const match = text.match(pattern); // Проверяем соответствие паттерну
-      data[key] = match && match[1] ? match[1].trim() : null; // Сохраняем найденное значение
+  for (const [key, pattern] of Object.entries(patterns)) {
+    const match = text.match(pattern);
+    data[key] = match ? match[1].trim() : null;
   }
+
   return data;
 }
 
-function displaySecondEntityResults(data, outputDiv) {
-  if (!data || Object.values(data).every(value => value === null)) return; // Пропускаем, если нет данных
-
-  // Создаем заголовок для второго юр.лица
-  const secondEntityHeader = document.createElement('h3');
-  secondEntityHeader.textContent = "2 юр.лицо";
-  outputDiv.appendChild(secondEntityHeader);
-
-  // Определяем поля для второго юр.лица
+function displayNthEntityResults(data, outputDiv, number) {
   const fields = [
-      { label: "ТСП", value: data['название_тсп']?.split(',')[0].trim(), type: "button" },
-      { label: "MID", value: data['merchant_id'], type: "button" },
-      { label: "TID", value: data['terminal_id'], type: "button" },
-      { label: "TPK_KEY", value: data['tpk_key'], type: "button" },
-      { label: "TAK_KEY", value: data['tak_key'], type: "button" },
-      { label: "TDK_KEY", value: data['tdk_key'], type: "button" }
+    { label: "ТСП", value: data["название_тсп"]?.split(",")[0].trim(), type: "button" },
+    { label: "MID", value: data["merchant_id"], type: "button" },
+    { label: "TID", value: data["terminal_id"], type: "button" },
+    { label: "TPK_KEY", value: data["tpk_key"], type: "button" },
+    { label: "TAK_KEY", value: data["tak_key"], type: "button" },
+    { label: "TDK_KEY", value: data["tdk_key"], type: "button" },
   ];
 
-  // Отображаем каждый пункт
-  fields.forEach(field => {
-      if (field.value === null || field.value === "Не указано") return; // Пропускаем пустые значения
+  // Проверяем, есть ли вообще какие-то непустые данные
+  const hasData = fields.some(field => field.value);
 
-      const itemDiv = document.createElement('div'); // Создаем элемент для каждого пункта
-      itemDiv.className = 'result-item'; // Добавляем класс для стилей
+  if (!hasData) return;
 
-      if (field.label) {
-          const labelSpan = document.createElement('span'); // Создаем метку
-          labelSpan.textContent = `${field.label}:`;
-          itemDiv.appendChild(labelSpan); // Добавляем метку в элемент
-      }
+  // Добавляем заголовок
+  const header = document.createElement("h3");
+  header.textContent = `${number} юр.лицо`;
+  outputDiv.appendChild(header);
 
-      if (field.type === "button") {
-          const button = document.createElement('button'); // Создаем кнопку
-          button.innerHTML = field.value;
-          button.onclick = () => copyToClipboard(button); // Добавляем обработчик для копирования
-          itemDiv.appendChild(button); // Добавляем кнопку в элемент
-      } else {
-          const textElement = document.createElement('span'); // Создаем текстовый элемент
-          textElement.innerHTML = field.value;
-          itemDiv.appendChild(textElement); // Добавляем текст в элемент
-      }
+  // Отображаем поля
+  fields.forEach((field) => {
+    if (field.value === null || field.value === "") return;
 
-      outputDiv.appendChild(itemDiv); // Добавляем элемент в контейнер результатов
+    const itemDiv = document.createElement("div");
+    itemDiv.className = "result-item";
+
+    if (field.label) {
+      const labelSpan = document.createElement("span");
+      labelSpan.textContent = `${field.label}:`;
+      itemDiv.appendChild(labelSpan);
+    }
+
+    const button = document.createElement("button");
+    button.innerHTML = field.value;
+    button.onclick = () => copyToClipboard(button);
+    itemDiv.appendChild(button);
+
+    outputDiv.appendChild(itemDiv);
   });
 }
 
