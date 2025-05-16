@@ -397,7 +397,6 @@ function toggleTheme() {
 
 function highlightKeywords(text) {
   const keywords = [
-    "ВНИМАНИЕ",
     "МУЛЬТИМЕРЧАНТ",
     "ЭЛЕКТРОННЫМИ СЕРТИФИКАТАМИ",
     "ОБРАТНОГО ЭКВАЙРИНГА",
