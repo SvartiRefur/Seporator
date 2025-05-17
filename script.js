@@ -67,10 +67,12 @@ const translitMap = {
 };
 
 function transliterateToRussian(text) {
+  if (!text) return '';
   text = text.toUpperCase();
-  return text
-    .replace(/(GUS|KHRUSTALNYY|ASTOSADOK|PROKOPEVSK|DYATKOVO|UCHALY|ULYANOVSK|OKTYABRSKY|STAVROPOL|ANGELS|ROSLAVL|KAZAN|PERM|TVER|SHCH|TSY|SCH|NYY|NY|SH|KH|ZH|TS|CH|KY|YU|YA)/g, (match) => translitMap[match] || match) 
-    .replace(/[A-Z]/g, (char) => translitMap[char] || char); 
+  const keys = Object.keys(translitMap);
+  const sortedKeys = keys.sort((a, b) => b.length - a.length);
+  const pattern = new RegExp(sortedKeys.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'gi');
+  return text.replace(pattern, match => translitMap[match.toUpperCase()] || match);
 }
 
 function loadTheme() {
