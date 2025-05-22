@@ -68,6 +68,7 @@ const translitMap = {
   KUNE: "КУНЬЕ",
   BYKOVO: "БЫКОВО",
   IRKUTSK: "ИРКУТСК",
+  TYUMEN: "ТЮМЕНЬ",
 };
 
 function transliterateToRussian(text) {
