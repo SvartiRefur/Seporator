@@ -65,6 +65,7 @@ const translitMap = {
   ULYANOVSK: "УЛЬЯНОВСК",
   UCHALY: "УЧАЛЫ",
   NOVOROSSYSK: "НОВОРОССИЙСК",
+  VOLSK: "ВОЛЬСК",
 };
 
 function transliterateToRussian(text) {
