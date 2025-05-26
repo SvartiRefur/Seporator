@@ -65,11 +65,6 @@ const translitMap = {
   ULYANOVSK: "УЛЬЯНОВСК",
   UCHALY: "УЧАЛЫ",
   NOVOROSSYSK: "НОВОРОССИЙСК",
-  KUNE: "КУНЬЕ",
-  BYKOVO: "БЫКОВО",
-  IRKUTSK: "ИРКУТСК",
-  TYUMEN: "ТЮМЕНЬ",
-  TOLBAZY: "ТОЛБАЗЫ",
 };
 
 function transliterateToRussian(text) {
@@ -205,6 +200,8 @@ if (fourthEntityStart !== -1) {
   const fourthEntityData = extractNthEntityData(fourthEntityText);
   displayNthEntityResults(fourthEntityData, outputDiv, 4);
 }
+
+highlightUsedLines(inputText, result);
 }
 
 function extractNumberAfterLabel(text, label) {
@@ -419,6 +416,38 @@ function highlightKeywords(text) {
     text = text.replace(regex, '<span class="attention">$1</span>');
   });
   return text;
+}
+
+function highlightUsedLines(inputText, result) {
+  const lines = inputText.split('\n');
+  const usedLines = [];
+
+  // Поиск всех ключевых слов/паттернов, по которым извлекается информация
+  const allPatterns = [
+    ...Object.values(patterns),
+    ...Object.values(specificFields).map(label => new RegExp(label, 'i')),
+    /SSID:/i,
+    /Password:/i,
+    /Название\s+ТСП:/i,
+    /Город:/i,
+    /Адрес установки:/i,
+    /Описание неисправности/i,
+    /Регистрационные данные/i,
+    /2 юр\.лицо:/,
+    /3 юр\.лицо:/,
+    /4 юр\.лицо:/,
+  ];
+
+  for (const line of lines) {
+    const isUsedLine = allPatterns.some(pattern => pattern.test(line));
+    if (isUsedLine) {
+      usedLines.push(`<span class="highlighted-line">${line}</span>`);
+    } else {
+      usedLines.push(line);
+    }
+  }
+
+  document.getElementById('verificationText').innerHTML = usedLines.join('\n');
 }
 
 // Загрузка темы при загрузке страницы
