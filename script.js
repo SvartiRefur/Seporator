@@ -334,7 +334,7 @@ function extractNthEntityData(text) {
   const patterns = {
     название_тсп: /Название\s+ТСП:\s*(.*?),/i,
     merchant_id: /MerchantID\s*:\s*(\S+)/i,
-    terminal_id: /Terminal_ID\s*:\s*(\d+)/i,
+    terminal_id: /Terminal_ID\s*:\s*(\S+)/i,
     tpk_key: /TPK_KEY\s*:\s*(\S+)/i,
     tak_key: /TAK_KEY\s*:\s*(\S+)/i,
     tdk_key: /TDK_KEY\s*:\s*(\S+)/i,
