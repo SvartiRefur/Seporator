@@ -68,6 +68,7 @@ const translitMap = {
   VOLSK: "ВОЛЬСК",
   MYTISHCHI: "МЫТИЩИ",
   TYUMEN: "ТЮМЕНЬ",
+  BRINKOVSKAYA: "БРИНЬКОВСКОЕ",
 };
 
 function transliterateToRussian(text) {
