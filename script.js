@@ -170,9 +170,29 @@ function extractData() {
           result['город_адрес'] = extractCityAndAddress(inputText, inputText);
       }
   }
+// Проверяем, есть ли слово "RKL" в тексте
+const hasRKL = /\bRKL\b/i.test(inputText);
+result['securelink'] = hasRKL ? 'SECURELINK=1' : null;
 
   // Отображение результатов
   displayResults(result, outputDiv);
+
+  // Добавляем кнопку SECURELINK=1, если найдено слово RKL
+if (result['securelink']) {
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'result-item';
+
+    const labelSpan = document.createElement('span');
+    labelSpan.textContent = 'SECURELINK:';
+    itemDiv.appendChild(labelSpan);
+
+    const button = document.createElement('button');
+    button.innerHTML = 'SECURELINK=1';
+    button.onclick = () => copyToClipboard(button);
+    itemDiv.appendChild(button);
+
+    outputDiv.appendChild(itemDiv);
+}
 
   // Извлечение описания неисправности
   const faultDescription = extractBetweenLabels(inputText, "Описание неисправности", "Регистрационные данные");
