@@ -81,6 +81,7 @@ const translitMap = {
   STAROIZOBILNAYA: "СТАРОИЗОБИЛЬНАЯ",
   NEVINNOMYSSK: "НЕВИННОМЫССК",
   LEVOEGORLYKSKY: "ЛЕВОЕГОРЛЫКСКИЙ",
+  SHUSHARY: "ШУШАРЫ",
 };
 
 function transliterateToRussian(text) {
