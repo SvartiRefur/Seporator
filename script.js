@@ -80,6 +80,7 @@ const translitMap = {
   BAKHTYBAEVO: "БАХТЫБАЕВО",
   STAROIZOBILNAYA: "СТАРОИЗОБИЛЬНАЯ",
   NEVINNOMYSSK: "НЕВИННОМЫССК",
+  LEVOEGORLYKSKY: "ЛЕВОЕГОРЛЫКСКИЙ",
 };
 
 function transliterateToRussian(text) {
