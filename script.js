@@ -69,6 +69,13 @@ const translitMap = {
   MYTISHCHI: "МЫТИЩИ",
   TYUMEN: "ТЮМЕНЬ",
   BRINKOVSKAYA: "БРИНЬКОВСКАЯ",
+  NUGUSH: "НУГУШ",
+  PROMYSHLENNAYA: "ПРОМЫШЛЕННАЯ",
+  CHERNYSHEVKA: "ЧЕРНЫШЕВКА",
+  IRKUTSK: "ИРКУТСК",
+  YANYSHEVO: "ЯНЫШЕВО",
+  GORNYY: "ГОРНЫЙ",
+  BALYKLEY: "БАЛЫКЛЕЙ",
 };
 
 function transliterateToRussian(text) {
