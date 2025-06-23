@@ -79,7 +79,7 @@ const translitMap = {
   RYBACHY: "РЫБАЧИЙ",
   BAKHTYBAEVO: "БАХТЫБАЕВО",
   STAROIZOBILNAYA: "СТАРОИЗОБИЛЬНАЯ",
-  NEVINNOMYSSK: "НЕВИННОМЫСК",
+  NEVINNOMYSSK: "НЕВИННОМЫССК",
 };
 
 function transliterateToRussian(text) {
