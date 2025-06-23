@@ -77,6 +77,7 @@ const translitMap = {
   GORNYY: "ГОРНЫЙ",
   BALYKLEY: "БАЛЫКЛЕЙ",
   RYBACHY: "РЫБАЧИЙ",
+  BAKHTYBAEVO: "БАХТЫБАЕВО",
 };
 
 function transliterateToRussian(text) {
