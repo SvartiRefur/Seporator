@@ -2,6 +2,8 @@ const patterns = {
   merchant_id: /MerchantID\s*:\s*(\S+)/i,
   тип_терминала: /Тип\s+терминала\s*:\s*(\S+)/i,
   terminal_id: /Terminal_ID\s*:\s*(\S+)/i,
+  модель_терминала: /Модель\s+терминала\s*:\s*(.*)$/im,
+  модель_пинпада: /Модель\s+пин-пада\s*:\s*(.*)$/im,
 };
 const specificFields = {
   номер_счета: "Номер счета юр. лица",
@@ -184,6 +186,7 @@ function extractData() {
           result['город_адрес'] = extractCityAndAddress(inputText, inputText);
       }
   }
+
   // Отображение результатов
   displayResults(result, outputDiv);
 
@@ -300,6 +303,8 @@ function displayResults(data, outputDiv) {
   // Остальные поля
   fields.push(
       { label: "Тип терминала", value: data['тип_терминала'], type: "text" },
+      { label: "Модель терминала", value: data['модель_терминала'], type: "text" },
+      { label: "Модель пин-пада", value: data['модель_пинпада'], type: "text" },
       { label: "ТСП", value: data['название_тсп']?.split(',')[0].trim(), type: "button" },
       { label: "MID", value: data['merchant_id'], type: "button" },
       { label: "ID платформы", value: data['id_платформы'], type: "button" },
