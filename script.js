@@ -116,22 +116,27 @@ function extractData() {
   // Очистка поля "Описание неисправности", если фраза отсутствует
   const faultDescriptionElement = document.getElementById('faultDescription');
   if (!inputText.includes("Описание неисправности")) {
-      faultDescriptionElement.innerHTML = "";
+    faultDescriptionElement.innerHTML = "";
   }
 
+  // Определяем конец области анализа — до строки "Тип заявки"
+  const requestTypeIndex = inputText.indexOf("Тип заявки");
+  const textToProcess = requestTypeIndex !== -1
+    ? inputText.substring(0, requestTypeIndex)
+    : inputText;
+
   // Первая строка возвращается полностью
-  const firstLine = inputText.split('\n')[0].trim();
+  const firstLine = textToProcess.split('\n')[0]?.trim() || '';
   result['первая_строка'] = firstLine;
 
   // Обновленная логика для поиска ТСП
-  const tspMatch = inputText.match(/Название\s+ТСП:\s*(.*?)(?=,|$)/i); // Ищем всё до запятой или конца строки
+  const tspMatch = textToProcess.match(/Название\s+ТСП:\s*(.*?)(?=,|$)/i); // Ищем всё до запятой или конца строки
   let название_тсп = tspMatch ? tspMatch[1].trim() : null;
 
-  // Если запятая есть, берем всё до неё; иначе берем всю строку
+  // Если запятая есть, берем всё до первой запятой
   if (название_тсп && название_тсп.includes(',')) {
-      название_тсп = название_тсп.split(',')[0].trim(); // Берем всё до первой запятой
+    название_тсп = название_тсп.split(',')[0].trim();
   }
-
   result['название_тсп'] = название_тсп;
 
   // Извлечение SSID и Password из первой строки
@@ -143,84 +148,84 @@ function extractData() {
 
   // Удаляем кавычку в конце Password, если она есть
   if (password && password.endsWith('"')) {
-      password = password.slice(0, -1).trim();
+    password = password.slice(0, -1).trim();
   }
 
   // Удаляем SSID и Password из первой строки
   let filteredFirstLine = firstLine;
-  if (ssid) {
-      filteredFirstLine = filteredFirstLine.replace(ssidMatch[0], '').trim();
+  if (ssid && ssidMatch) {
+    filteredFirstLine = filteredFirstLine.replace(ssidMatch[0], '').trim();
   }
-  if (password) {
-      filteredFirstLine = filteredFirstLine.replace(passwordMatch[0], '').trim();
+  if (password && passwordMatch) {
+    filteredFirstLine = filteredFirstLine.replace(passwordMatch[0], '').trim();
   }
-
   result['первая_строка'] = filteredFirstLine;
 
   // Добавляем SSID и Password в результаты, если они найдены
   if (ssid) {
-      result['ssid'] = ssid;
+    result['ssid'] = ssid;
   }
   if (password) {
-      result['password'] = password;
+    result['password'] = password;
   }
 
   // Извлечение данных для первого юр.лица
   for (const [key, pattern] of Object.entries(patterns)) {
-      if (key === 'название_тсп') continue; // Пропускаем обработку ТСП, так как оно уже извлечено
-      const match = inputText.match(pattern);
-      result[key] = match ? match[1].trim() : null;
+    if (key === 'название_тсп') continue; // Пропускаем обработку ТСП, так как оно уже извлечено
+    const match = textToProcess.match(pattern);
+    result[key] = match ? match[1]?.trim() : null;
   }
 
   // Обработка специальных полей
   for (const [key, label] of Object.entries(specificFields)) {
-      if (label === "Номер счета юр. лица") {
-          result['номер_счета'] = extractNumberAfterLabel(inputText, "Номер счета юридического лица");
-      } else if (label === "Алиас счета юр. лица") {
-          result['алиас_счета'] = extractAlias(inputText, "Алиас счета юридического лица (синоним счета)");
-      } else if (label === "Идентификатор ТСП") {
-          result['идентификатор_тсп'] = extractBetweenLabels(inputText, "Идентификатор ТСП", "ID платформы");
-      } else if (label === "ID платформы") {
-          result['id_платформы'] = extractAfterLabel(inputText, "ID платформы");
-      } else if (label === "Адрес") {
-          result['город_адрес'] = extractCityAndAddress(inputText, inputText);
-      }
+    if (label === "Номер счета юр. лица") {
+      result['номер_счета'] = extractNumberAfterLabel(textToProcess, "Номер счета юридического лица");
+    } else if (label === "Алиас счета юр. лица") {
+      result['алиас_счета'] = extractAlias(textToProcess, "Алиас счета юридического лица (синоним счета)");
+    } else if (label === "Идентификатор ТСП") {
+      result['идентификатор_тсп'] = extractBetweenLabels(textToProcess, "Идентификатор ТСП", "ID платформы");
+    } else if (label === "ID платформы") {
+      result['id_платформы'] = extractAfterLabel(textToProcess, "ID платформы");
+    } else if (label === "Адрес") {
+      result['город_адрес'] = extractCityAndAddress(textToProcess, inputText);
+    }
   }
 
   // Отображение результатов
   displayResults(result, outputDiv);
 
-  // Извлечение описания неисправности
+  // Извлечение описания неисправности (вне зоны текста, но может быть после "Тип заявки")
   const faultDescription = extractBetweenLabels(inputText, "Описание неисправности", "Регистрационные данные");
   faultDescriptionElement.innerHTML = faultDescription
-      ? highlightKeywords(faultDescription)
-      : "Не указано";
+    ? highlightKeywords(faultDescription)
+    : "Не указано";
 
   // --- Обработка второго юр.лица ---
-const secondEntityStart = inputText.indexOf("2 юр.лицо:");
-if (secondEntityStart !== -1) {
-  const secondEntityText = inputText.substring(secondEntityStart);
-  const secondEntityData = extractNthEntityData(secondEntityText);
-  displayNthEntityResults(secondEntityData, outputDiv, 2);
-}
+  const secondEntityStart = inputText.indexOf("2 юр.лицо:");
+  if (secondEntityStart !== -1) {
+    const secondEntityText = inputText.substring(secondEntityStart);
+    const secondEntityData = extractNthEntityData(secondEntityText);
+    displayNthEntityResults(secondEntityData, outputDiv, 2);
+  }
 
-// --- Обработка третьего юр.лица ---
-const thirdEntityStart = inputText.indexOf("3 юр.лицо:");
-if (thirdEntityStart !== -1) {
-  const thirdEntityText = inputText.substring(thirdEntityStart);
-  const thirdEntityData = extractNthEntityData(thirdEntityText);
-  displayNthEntityResults(thirdEntityData, outputDiv, 3);
-}
+  // --- Обработка третьего юр.лица ---
+  const thirdEntityStart = inputText.indexOf("3 юр.лицо:");
+  if (thirdEntityStart !== -1) {
+    const thirdEntityText = inputText.substring(thirdEntityStart);
+    const thirdEntityData = extractNthEntityData(thirdEntityText);
+    displayNthEntityResults(thirdEntityData, outputDiv, 3);
+  }
 
-// --- Обработка четвертого юр.лица ---
-const fourthEntityStart = inputText.indexOf("4 юр.лицо:");
-if (fourthEntityStart !== -1) {
-  const fourthEntityText = inputText.substring(fourthEntityStart);
-  const fourthEntityData = extractNthEntityData(fourthEntityText);
-  displayNthEntityResults(fourthEntityData, outputDiv, 4);
-}
+  // --- Обработка четвертого юр.лица ---
+  const fourthEntityStart = inputText.indexOf("4 юр.лицо:");
+  if (fourthEntityStart !== -1) {
+    const fourthEntityText = inputText.substring(fourthEntityStart);
+    const fourthEntityData = extractNthEntityData(fourthEntityText);
+    displayNthEntityResults(fourthEntityData, outputDiv, 4);
+  }
 
-highlightUsedLines(inputText, result);
+  // Подсветка только использованных строк из анализируемой части
+  highlightUsedLines(textToProcess, result);
 }
 
 function extractNumberAfterLabel(text, label) {
