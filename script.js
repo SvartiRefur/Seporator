@@ -430,7 +430,7 @@ function highlightKeywords(text) {
     "ЭС",
     "Фармленд",
     "ФАРМЛЕНД",
-    "RKL"
+    "KLK"
   ];
   keywords.forEach((keyword) => {
     const regex = new RegExp(`(${keyword})`, "gi");
