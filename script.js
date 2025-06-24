@@ -86,6 +86,17 @@ const translitMap = {
   SHUSHARY: "ШУШАРЫ",
 };
 
+const KEYWORDS = [
+  "МУЛЬТИМЕРЧАНТ",
+  "ЭЛЕКТРОННЫМИ СЕРТИФИКАТАМИ",
+  "ОБРАТНОГО ЭКВАЙРИНГА",
+  "ОЭ",
+  "ЭС",
+  "Фармленд",
+  "ФАРМЛЕНД",
+  "KLK",
+];
+
 function transliterateToRussian(text) {
   if (!text) return '';
   text = text.toUpperCase();
@@ -195,7 +206,7 @@ function extractData() {
   displayResults(result, outputDiv);
 
   // Извлечение описания неисправности (вне зоны текста, но может быть после "Тип заявки")
-  const faultDescription = extractBetweenLabels(inputText, "Описание неисправности", "Регистрационные данные");
+  const faultDescription = extractKeywordsFromSection(inputText, "Описание неисправности", "Регистрационные данные");
   faultDescriptionElement.innerHTML = faultDescription
     ? highlightKeywords(faultDescription)
     : "Не указано";
@@ -427,21 +438,57 @@ function toggleTheme() {
 }
 
 function highlightKeywords(text) {
-  const keywords = [
-    "МУЛЬТИМЕРЧАНТ",
-    "ЭЛЕКТРОННЫМИ СЕРТИФИКАТАМИ",
-    "ОБРАТНОГО ЭКВАЙРИНГА",
-    "ОЭ",
-    "ЭС",
-    "Фармленд",
-    "ФАРМЛЕНД",
-    "KLK"
-  ];
-  keywords.forEach((keyword) => {
+  if (!text) return "";
+
+  KEYWORDS.forEach((keyword) => {
     const regex = new RegExp(`(${keyword})`, "gi");
     text = text.replace(regex, '<span class="attention">$1</span>');
   });
+
   return text;
+}
+
+function extractOnlyKeywords(text) {
+  const foundKeywords = [];
+
+  KEYWORDS.forEach((keyword) => {
+    const regex = new RegExp(keyword, "gi");
+    if (regex.test(text)) {
+      foundKeywords.push(keyword);
+    }
+  });
+
+  return foundKeywords.length > 0 ? foundKeywords.join(", ") : null;
+}
+
+function extractKeywordsFromSection(text, startLabel, endLabel) {
+  const startIndex = text.indexOf(startLabel);
+  const endIndex = text.indexOf(endLabel);
+
+  // Если обе метки найдены — выделяем участок текста между ними
+  if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
+    const sectionText = text.substring(
+      startIndex + startLabel.length,
+      endIndex
+    ).trim();
+
+    return extractKeywords(sectionText);
+  }
+
+  return null;
+}
+
+function extractKeywords(text) {
+  const foundKeywords = [];
+
+  KEYWORDS.forEach((keyword) => {
+    const regex = new RegExp(keyword, "gi");
+    if (regex.test(text)) {
+      foundKeywords.push(keyword);
+    }
+  });
+
+  return foundKeywords.length > 0 ? foundKeywords.join(", ") : null;
 }
 
 function highlightUsedLines(inputText, result) {
