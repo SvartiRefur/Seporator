@@ -458,6 +458,8 @@ function highlightUsedLines(inputText, result) {
     /3 юр\.лицо:/,
     /4 юр\.лицо:/,
     /Номер счета юридического лица/i,
+    /Модель\s+терминала\s*:/i,
+    /Модель\s+пин-пада\s*:/i,
   ];
 
   for (const line of lines) {
