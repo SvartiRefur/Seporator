@@ -84,6 +84,7 @@ const translitMap = {
   NEVINNOMYSSK: "НЕВИННОМЫССК",
   LEVOEGORLYKSKY: "ЛЕВОЕГОРЛЫКСКИЙ",
   SHUSHARY: "ШУШАРЫ",
+  NOVOSADOVYY: "НОВОСАДОВЫЙ",
 };
 
 const KEYWORDS = [
