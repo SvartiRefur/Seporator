@@ -85,6 +85,8 @@ const translitMap = {
   LEVOEGORLYKSKY: "ЛЕВОЕГОРЛЫКСКИЙ",
   SHUSHARY: "ШУШАРЫ",
   NOVOSADOVYY: "НОВОСАДОВЫЙ",
+  SOL: "СОЛЬ",
+  ILETSK: "ИЛЕЦК",
 };
 
 const KEYWORDS = [
