@@ -308,60 +308,69 @@ function extractCityAndAddress(text, fullText) {
 
 function displayResults(data, outputDiv) {
   const fields = [
-      { label: "", value: data['первая_строка'], type: "text" }
+    { label: "", value: data['первая_строка'], type: "text" }
   ];
 
   // Добавляем SSID и Password только если Password существует
   if (data['password']) {
-      fields.push({ label: "SSID", value: data['ssid'], type: "button" });
-      fields.push({ label: "Password", value: data['password'], type: "button" });
+    fields.push({ label: "SSID", value: data['ssid'], type: "button" });
+    fields.push({ label: "Password", value: data['password'], type: "button" });
   }
 
   // Остальные поля
   fields.push(
-      { label: "Тип терминала", value: data['тип_терминала'], type: "text" },
-      { label: "Модель терминала", value: data['модель_терминала'], type: "text" },
-      { label: "Модель пин-пада", value: data['модель_пинпада'], type: "text" },
-      { label: "ТСП", value: data['название_тсп']?.split(',')[0].trim(), type: "button" },
-      { label: "MID", value: data['merchant_id'], type: "button" },
-      { label: "ID платформы", value: data['id_платформы'], type: "button" },
-      { label: "TID", value: data['terminal_id'], type: "button" },
-      { label: "Идентификатор ТСП", value: data['идентификатор_тсп'], type: "button" },
-      { label: "Номер счета юр. лица", value: data['номер_счета'], type: "button" },
-      { label: "Алиас счета юр. лица", value: data['алиас_счета'], type: "button" },
-      { label: "Адрес", value: data['город_адрес'], type: "button" }
+    { label: "Тип терминала", value: data['тип_терминала'], type: "text" },
+    { label: "Модель терминала", value: data['модель_терминала'], type: "text" },
+    { label: "Модель пин-пада", value: data['модель_пинпада'], type: "text" },
+    { label: "ТСП", value: data['название_тсп']?.split(',')[0].trim(), type: "button" },
+    { label: "MID", value: data['merchant_id'], type: "button" },
+    { label: "ID платформы", value: data['id_платформы'], type: "button" },
+    { label: "TID", value: data['terminal_id'], type: "button" },
+    { label: "Идентификатор ТСП", value: data['идентификатор_тсп'], type: "button" },
+    { label: "Номер счета юр. лица", value: data['номер_счета'], type: "button" },
+    { label: "Алиас счета юр. лица", value: data['алиас_счета'], type: "button" },
+    { label: "Адрес", value: data['город_адрес'], type: "button" }
   );
 
+  const firstLine = data['первая_строка'].toLowerCase();
+
   fields.forEach(field => {
-      if (field.value === null || field.value === "Не указано") return; // Пропускаем пустые значения
+    if (field.value === null || field.value === "Не указано") return;
 
-      // Если поле "ТСП" и значение отсутствует, пропускаем его
-      if (field.label === "ТСП" && !data['название_тсп']) return;
+    // Пропуск некоторых полей, если данные не найдены
+    if ((field.label === "ТСП" && !data['название_тсп']) ||
+        (field.label === "Адрес" && data['город_адрес'] === null)) return;
 
-      // Если поле "Адрес" и данные отсутствуют, пропускаем его
-      if (field.label === "Адрес" && data['город_адрес'] === null) return;
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'result-item';
 
-      const itemDiv = document.createElement('div');
-      itemDiv.className = 'result-item';
+    if (field.label) {
+      const labelSpan = document.createElement('span');
+      labelSpan.textContent = `${field.label}:`;
+      itemDiv.appendChild(labelSpan);
+    }
 
-      if (field.label) {
-          const labelSpan = document.createElement('span');
-          labelSpan.textContent = `${field.label}:`;
-          itemDiv.appendChild(labelSpan);
+    let displayValue;
+    if (field.type === "button") {
+      const button = document.createElement('button');
+      button.innerHTML = field.value;
+      button.onclick = () => copyToClipboard(button);
+      displayValue = button;
+    } else {
+      displayValue = document.createElement('span');
+      displayValue.innerHTML = field.value;
+
+      // Проверяем только "Модель терминала"
+      if (field.label === "Модель терминала") {
+        const fieldValue = field.value.toLowerCase();
+        if (!firstLine.includes(fieldValue)) {
+          displayValue.classList.add("attention"); // Красное выделение
+        }
       }
+    }
 
-      if (field.type === "button") {
-          const button = document.createElement('button');
-          button.innerHTML = field.value;
-          button.onclick = () => copyToClipboard(button);
-          itemDiv.appendChild(button);
-      } else {
-          const textElement = document.createElement('span');
-          textElement.innerHTML = field.value;
-          itemDiv.appendChild(textElement);
-      }
-
-      outputDiv.appendChild(itemDiv);
+    itemDiv.appendChild(displayValue);
+    outputDiv.appendChild(itemDiv);
   });
 }
 
