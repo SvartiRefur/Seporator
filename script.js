@@ -86,7 +86,6 @@ const translitMap = {
   SHUSHARY: "ШУШАРЫ",
   NOVOSADOVYY: "НОВОСАДОВЫЙ",
   SOL: "СОЛЬ",
-  ILETSK: "ИЛЕЦК",
 };
 
 const KEYWORDS = [
