@@ -87,6 +87,7 @@ const translitMap = {
   NOVOSADOVYY: "НОВОСАДОВЫЙ",
   SOL: "СОЛЬ",
   EGOREVSK: "ЕГОРЬЕВСК",
+  KIMRY: "КИМРЫ",
 };
 const KEYWORDS = [
   "МУЛЬТИМЕРЧАНТ",
