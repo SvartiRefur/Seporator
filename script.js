@@ -89,6 +89,7 @@ const translitMap = {
   EGOREVSK: "ЕГОРЬЕВСК",
   KIMRY: "КИМРЫ",
   MEZHGORE: "МЕЖГОРЬЕ",
+  POLYSAEVO: "ПОЛЫСАЕВО",
 };
 const KEYWORDS = [
   "МУЛЬТИМЕРЧАНТ",
