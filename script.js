@@ -90,6 +90,7 @@ const translitMap = {
   KIMRY: "КИМРЫ",
   MEZHGORE: "МЕЖГОРЬЕ",
   POLYSAEVO: "ПОЛЫСАЕВО",
+  SHIKHANY: "ШИХАНЫ",
 };
 const KEYWORDS = [
   "МУЛЬТИМЕРЧАНТ",
