@@ -14,6 +14,7 @@ const specificFields = {
 };
 const translitMap = {
   A: "А",
+  KARAMALY: "КАРАМАЛЫ",
   B: "Б",
   V: "В",
   G: "Г",
