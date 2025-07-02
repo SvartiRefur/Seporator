@@ -92,6 +92,7 @@ const translitMap = {
   POLYSAEVO: "ПОЛЫСАЕВО",
   SHIKHANY: "ШИХАНЫ",
   USADY: "УСАДЫ",
+  PITKYARANTA: "ПИТКЯРАНТА",
 };
 const KEYWORDS = [
   "МУЛЬТИМЕРЧАНТ",
