@@ -17,6 +17,7 @@ const translitMap = {
   KARAMALY: "КАРАМАЛЫ",
   NOVYY: "НОВЫЙ",
   YAZYKOVO: "ЯЗЫКОВО",
+  LYSVA: "ЛЫСЬВА",
   B: "Б",
   V: "В",
   G: "Г",
