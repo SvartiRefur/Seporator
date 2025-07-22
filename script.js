@@ -14,6 +14,7 @@ const specificFields = {
 };
 const translitMap = {
   A: "А",
+  ARKHANGELSK: "АРХАНГЕЛЬСК",
   KHABARY: "ХАБАРЫ",
   KARAMALY: "КАРАМАЛЫ",
   NOVYY: "НОВЫЙ",
