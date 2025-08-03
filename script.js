@@ -437,8 +437,15 @@ function toggleTheme() {
 function highlightKeywords(text) {
   if (!text) return "";
   KEYWORDS.forEach((keyword) => {
-    const regex = new RegExp(`(${keyword})`, "gi");
-    text = text.replace(regex, '<span class="attention">$1</span>');
+    // Для аббревиатур "ОЭ" и "ЭС" добавляем проверку на границы слов
+    if (keyword === "ОЭ" || keyword === "ЭС") {
+      const regex = new RegExp(`(^|\\s)(${keyword})(?=\\s|$)`, "gi");
+      text = text.replace(regex, '$1<span class="attention">$2</span>');
+    } else {
+      // Для остальных ключевых слов оставляем как было
+      const regex = new RegExp(`(${keyword})`, "gi");
+      text = text.replace(regex, '<span class="attention">$1</span>');
+    }
   });
   return text;
 }
@@ -467,9 +474,18 @@ function extractKeywordsFromSection(text, startLabel, endLabel) {
 function extractKeywords(text) {
   const foundKeywords = [];
   KEYWORDS.forEach((keyword) => {
-    const regex = new RegExp(keyword, "gi");
-    if (regex.test(text)) {
-      foundKeywords.push(keyword);
+    // Для аббревиатур "ОЭ" и "ЭС" добавляем проверку на границы слов
+    if (keyword === "ОЭ" || keyword === "ЭС") {
+      const regex = new RegExp(`(^|\\s)${keyword}(?=\\s|$)`, "gi");
+      if (regex.test(text)) {
+        foundKeywords.push(keyword);
+      }
+    } else {
+      // Для остальных ключевых слов оставляем как было
+      const regex = new RegExp(keyword, "gi");
+      if (regex.test(text)) {
+        foundKeywords.push(keyword);
+      }
     }
   });
   return foundKeywords.length > 0 ? foundKeywords.join(", ") : null;
