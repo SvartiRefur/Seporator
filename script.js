@@ -12,95 +12,103 @@ const specificFields = {
   id_платформы: "ID платформы",
   город_адрес: "Адрес",
 };
-const translitMap = {
-  A: "А",
-  ARKHANGELSK: "АРХАНГЕЛЬСК",
-  KHABARY: "ХАБАРЫ",
-  KARAMALY: "КАРАМАЛЫ",
-  NOVYY: "НОВЫЙ",
-  YAZYKOVO: "ЯЗЫКОВО",
-  LYSVA: "ЛЫСЬВА",
-  B: "Б",
-  V: "В",
-  G: "Г",
-  D: "Д",
-  E: "Е",
-  EO: "Ё",
-  ZH: "Ж",
-  Z: "З",
-  I: "И",
-  Y: "Й",
-  K: "К",
-  L: "Л",
-  M: "М",
-  N: "Н",
-  O: "О",
-  P: "П",
-  R: "Р",
-  S: "С",
-  T: "Т",
-  U: "У",
-  F: "Ф",
-  H: "Х",
-  KH: "Х",
-  C: "Ц",
-  TS: "Ц",
-  CH: "Ч",
-  SH: "Ш",
-  SCH: "Щ",
-  SHCH: "Щ",
-  YU: "Ю",
-  YA: "Я",
-  J: "ДЖ",
-  W: "В",
-  Q: "КВ",
-  KY: "КИЙ",
-  NYY: "НЫЙ",
-  ANGELS: "ЭНГЕЛЬС",
-  ROSLAVL: "РОСЛАВЛЬ",
-  TVER: "ТВЕРЬ",
-  STAVROPOL: "СТАВРОПОЛЬ",
-  TSY: "ЦЫ",
-  PERM: "ПЕРМЬ",
-  NY: "НИЙ",
-  GUS: "ГУСЬ",
-  KHRUSTALNYY: "ХРУСТАЛЬНЫЙ",
-  OKTYABRSKY: "ОКТЯБРЬСКИЙ",
-  KAZAN: "КАЗАНЬ",
-  ASTOSADOK: "ЭСТОСАДОК",
-  PROKOPEVSK: "ПРОКОПЬЕВСК",
-  DYATKOVO: "ДЯТЬКОВО",
-  ULYANOVSK: "УЛЬЯНОВСК",
-  UCHALY: "УЧАЛЫ",
-  NOVOROSSYSK: "НОВОРОССИЙСК",
-  VOLSK: "ВОЛЬСК",
-  MYTISHCHI: "МЫТИЩИ",
-  TYUMEN: "ТЮМЕНЬ",
-  BRINKOVSKAYA: "БРИНЬКОВСКАЯ",
-  NUGUSH: "НУГУШ",
-  PROMYSHLENNAYA: "ПРОМЫШЛЕННАЯ",
-  CHERNYSHEVKA: "ЧЕРНЫШЕВКА",
-  IRKUTSK: "ИРКУТСК",
-  YANYSHEVO: "ЯНЫШЕВО",
-  GORNYY: "ГОРНЫЙ",
-  BALYKLEY: "БАЛЫКЛЕЙ",
-  RYBACHY: "РЫБАЧИЙ",
-  BAKHTYBAEVO: "БАХТЫБАЕВО",
-  STAROIZOBILNAYA: "СТАРОИЗОБИЛЬНАЯ",
-  NEVINNOMYSSK: "НЕВИННОМЫССК",
-  LEVOEGORLYKSKY: "ЛЕВОЕГОРЛЫКСКИЙ",
-  SHUSHARY: "ШУШАРЫ",
-  NOVOSADOVYY: "НОВОСАДОВЫЙ",
-  SOL: "СОЛЬ",
-  EGOREVSK: "ЕГОРЬЕВСК",
-  KIMRY: "КИМРЫ",
-  MEZHGORE: "МЕЖГОРЬЕ",
-  POLYSAEVO: "ПОЛЫСАЕВО",
-  SHIKHANY: "ШИХАНЫ",
-  USADY: "УСАДЫ",
-  UST: "УСТЬ",
-  PITKYARANTA: "ПИТКЯРАНТА",
+
+const translitExceptions = {
+  // Города и населенные пункты
+  "ARKHANGELSK": "АРХАНГЕЛЬСК",
+  "KHABARY": "ХАБАРЫ",
+  "KARAMALY": "КАРАМАЛЫ",
+  "NOVYY": "НОВЫЙ",
+  "YAZYKOVO": "ЯЗЫКОВО",
+  "LYSVA": "ЛЫСЬВА",
+  "ANGELS": "ЭНГЕЛЬС",
+  "ROSLVL": "РОСЛАВЛЬ",
+  "TVER": "ТВЕРЬ",
+  "STAVROPOL": "СТАВРОПОЛЬ",
+  "PERM": "ПЕРМЬ",
+  "GUS": "ГУСЬ",
+  "KHRUSTALNYY": "ХРУСТАЛЬНЫЙ",
+  "OKTYABRSKY": "ОКТЯБРЬСКИЙ",
+  "KAZAN": "КАЗАНЬ",
+  "ASTOSADOK": "ЭСТОСАДОК",
+  "PROKOPEVSK": "ПРОКОПЬЕВСК",
+  "DYATKOVO": "ДЯТЬКОВО",
+  "ULYANOVSK": "УЛЬЯНОВСК",
+  "UCHALY": "УЧАЛЫ",
+  "NOVOROSSYSK": "НОВОРОССИЙСК",
+  "VOLSK": "ВОЛЬСК",
+  "MYTISHCHI": "МЫТИЩИ",
+  "TYUMEN": "ТЮМЕНЬ",
+  "BRINKOVSKAYA": "БРИНЬКОВСКАЯ",
+  "NUGUSH": "НУГУШ",
+  "PROMYSHLENNAYA": "ПРОМЫШЛЕННАЯ",
+  "CHERNYSHEVKA": "ЧЕРНЫШЕВКА",
+  "IRKUTSK": "ИРКУТСК",
+  "YANYSHEVO": "ЯНЫШЕВО",
+  "GORNYY": "ГОРНЫЙ",
+  "BALYKLEY": "БАЛЫКЛЕЙ",
+  "RYBACHY": "РЫБАЧИЙ",
+  "BAKHTYBAEVO": "БАХТЫБАЕВО",
+  "STAROIZOBILNAYA": "СТАРОИЗОБИЛЬНАЯ",
+  "NEVINNOMYSSK": "НЕВИННОМЫССК",
+  "LEVOEGORLYKSKY": "ЛЕВОЕГОРЛЫКСКИЙ",
+  "SHUSHARY": "ШУШАРЫ",
+  "NOVOSADOVYY": "НОВОСАДОВЫЙ",
+  "SOL": "СОЛЬ",
+  "EGOREVSK": "ЕГОРЬЕВСК",
+  "KIMRY": "КИМРЫ",
+  "MEZHGORE": "МЕЖГОРЬЕ",
+  "POLYSAEVO": "ПОЛЫСАЕВО",
+  "SHIKHANY": "ШИХАНЫ",
+  "USADY": "УСАДЫ",
+  "UST": "УСТЬ",
+  "PITKYARANTA": "ПИТКЯРАНТА",
+  "ELATMA": "ЕЛАТЬМА"
 };
+
+// Базовый словарь транслитерации
+const translitMap = {
+  "A": "А", 
+  "B": "Б",
+  "V": "В",
+  "G": "Г",
+  "D": "Д",
+  "E": "Е",
+  "EO": "Ё",
+  "ZH": "Ж",
+  "Z": "З",
+  "I": "И",
+  "Y": "Й",
+  "K": "К",
+  "L": "Л",
+  "M": "М",
+  "N": "Н",
+  "O": "О",
+  "P": "П",
+  "R": "Р",
+  "S": "С",
+  "T": "Т",
+  "U": "У",
+  "F": "Ф",
+  "H": "Х",
+  "KH": "Х",
+  "C": "Ц",
+  "TS": "Ц",
+  "CH": "Ч",
+  "SH": "Ш",
+  "SCH": "Щ",
+  "SHCH": "Щ",
+  "YU": "Ю",
+  "YA": "Я",
+  "J": "ДЖ",
+  "W": "В",
+  "Q": "КВ",
+  "KY": "КИЙ",
+  "NYY": "НЫЙ",
+  "TSY": "ЦЫ",
+  "NY": "НИЙ"
+};
+
 const KEYWORDS = [
   "МУЛЬТИМЕРЧАНТ",
   "ЭЛЕКТРОННЫМИ СЕРТИФИКАТАМИ",
@@ -114,11 +122,24 @@ const KEYWORDS = [
 
 function transliterateToRussian(text) {
   if (!text) return '';
-  text = text.toUpperCase();
-  const keys = Object.keys(translitMap);
-  const sortedKeys = keys.sort((a, b) => b.length - a.length);
-  const pattern = new RegExp(sortedKeys.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'gi');
-  return text.replace(pattern, match => translitMap[match.toUpperCase()] || match);
+  
+  // Сначала проверяем исключения
+  const upperText = text.toUpperCase();
+  for (const [key, value] of Object.entries(translitExceptions)) {
+    if (upperText.includes(key)) {
+      // Заменяем все вхождения исключения
+      const regex = new RegExp(key, 'gi');
+      text = text.replace(regex, value);
+    }
+  }
+  
+  // Затем применяем стандартную транслитерацию
+  const keys = Object.keys(translitMap).sort((a, b) => b.length - a.length);
+  const pattern = new RegExp(keys.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'gi');
+  
+  return text.replace(pattern, match => {
+    return translitMap[match.toUpperCase()] || match;
+  });
 }
 
 function loadTheme() {
