@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ПЕРЕМЕННЫЕ</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="menu-icon">☰</div>
+        <div class="menu-content">
+            <a href="index.html">SEPORA</a>
+            <a href="page2.html">ПЕРЕМЕННЫЕ</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="variables-section">
+            <h2>Переменные для терминалов</h2>
+            <div class="variable-item">
+                <button onclick="copyToClipboard(this)">MENUCLEARBASE=1</button>
+            </div>
+            <div class="variable-item">
+                <button onclick="copyToClipboard(this)">BGDNLDOFF=1</button>
+            </div>
+            <div class="variable-item">
+                <button onclick="copyTemplate(this)">Шаблон Q80</button>
+            </div>
+            <div class="variable-item">
+                <button onclick="copyTemplate(this)">Шаблон Q25</button>
+            </div>
+            <div class="variable-item">
+                <button onclick="copyTemplate(this)">Шаблон D230</button>
+            </div>
+            <div class="variable-item">
+                <button onclick="copyTemplate(this)">Шаблон D230 S200</button>
+            </div>
+        </div>
+        <div class="theme-switcher">
+            <label class="switch">
+                <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+    <script src="theme.js"></script>
+    <script src="variables-templates.js"></script>
+    <script>
+        function copyToClipboard(button) {
+            navigator.clipboard.writeText(button.textContent).then(() => {
+                button.classList.add("copied");
+                setTimeout(() => button.classList.remove("copied"), 3000);
+            });
+        }
+    </script>
+</body>
+</html>

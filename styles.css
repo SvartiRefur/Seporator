@@ -7,6 +7,78 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
+/* Добавим в начало файла */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 50px;
+    background-color: #f0f0f0;
+    transition: width 0.3s;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.dark-theme .sidebar {
+    background-color: #333;
+}
+
+.menu-icon {
+    padding: 15px;
+    font-size: 20px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.menu-content {
+    display: none;
+    padding: 10px;
+}
+
+.sidebar:hover {
+    width: 200px;
+}
+
+.sidebar:hover .menu-content {
+    display: block;
+}
+
+.menu-content a {
+    display: block;
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.dark-theme .menu-content a {
+    color: #fff;
+}
+
+.menu-content a:hover {
+    background-color: #ddd;
+}
+
+.dark-theme .menu-content a:hover {
+    background-color: #555;
+}
+
+/* Обновим container чтобы учесть боковое меню */
+.container {
+    margin-left: 60px; /* Добавляем отступ для sidebar */
+    display: grid;
+    grid-template-areas:
+        "input fault"
+        "output output"
+        "verification verification"
+        "theme theme";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 20px;
+    padding: 20px;
+}
+
 .dark-theme {
     background-color: #121212;
     color: #ffffff;
@@ -207,4 +279,30 @@ button:hover {
     background-color: green !important; /* Цвет как у "copied" */
     padding: 2px 5px;
     border-radius: 4px;
+}
+
+/* Стили для страницы переменных */
+.variables-section {
+    grid-area: output;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.variables-section h2 {
+    margin-bottom: 20px;
+}
+
+.variable-item {
+    margin-bottom: 15px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.variable-item button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    text-align: center;
 }
