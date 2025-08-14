@@ -63,7 +63,8 @@ const translitExceptions = {
   "USADY": "УСАДЫ",
   "UST": "УСТЬ",
   "PITKYARANTA": "ПИТКЯРАНТА",
-  "ELATMA": "ЕЛАТЬМА"
+  "ELATMA": "ЕЛАТЬМА",
+  "NYTVA": "НЫТВА",
 };
 
 // Базовый словарь транслитерации
@@ -527,5 +528,6 @@ function highlightUsedLines(inputText, result) {
   }
   document.getElementById('verificationText').innerHTML = usedLines.join('\n');
 }
+
 
 loadTheme();
