@@ -16,6 +16,8 @@ const specificFields = {
 const translitExceptions = {
   // Города и населенные пункты
   "ARKHANGELSK": "АРХАНГЕЛЬСК",
+  "MINERALNYE": "МИНЕРАЛЬНЫЕ", 
+  "VODY": "ВОДЫ",
   "KHABARY": "ХАБАРЫ",
   "KARAMALY": "КАРАМАЛЫ",
   "NOVYY": "НОВЫЙ",
@@ -532,4 +534,5 @@ function highlightUsedLines(inputText, result) {
 
 
 loadTheme();
+
 
