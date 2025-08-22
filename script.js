@@ -30,6 +30,7 @@ const translitExceptions = {
   "KHRUSTALNYY": "ХРУСТАЛЬНЫЙ",
   "OKTYABRSKY": "ОКТЯБРЬСКИЙ",
   "KAZAN": "КАЗАНЬ",
+  "RYAZAN": "РЯЗАНЬ",
   "ASTOSADOK": "ЭСТОСАДОК",
   "PROKOPEVSK": "ПРОКОПЬЕВСК",
   "DYATKOVO": "ДЯТЬКОВО",
@@ -531,3 +532,4 @@ function highlightUsedLines(inputText, result) {
 
 
 loadTheme();
+
